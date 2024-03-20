@@ -14,7 +14,7 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cd_book")
-    private int bookId;
+    private int cdBook;
 
     @Column(name = "title")
     private String title;
@@ -38,5 +38,5 @@ public class Book {
     private boolean archived;
 
     @Column(name = "update_dt")
-    private Date updateDate;
+    private Date updateDt;
 }

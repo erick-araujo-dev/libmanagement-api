@@ -27,10 +27,10 @@ public class RegisterBookController {
     @PostMapping("/users")
     public ResponseEntity<String> createUser(@RequestBody UserCreationDTO userDTO) {
         User user = new User();
-        user.setUsername(userDTO.getUsername());
+        user.setName(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
-        user.setCreateDate(new Date());
+        user.setCreateDt(new Date());
 
         userRepository.save(user);
 

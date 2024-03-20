@@ -14,10 +14,10 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cd_client")
-    private int clientId;
+    private int cdClient;
 
     @ManyToOne
-    @JoinColumn(name = "cd_adress", referencedColumnName = "cd_adress")
+    @JoinColumn(name = "cd_address", referencedColumnName = "cd_address")
     private Address address;
 
     @Column(name = "name")
@@ -27,8 +27,8 @@ public class Client {
     private String phone;
 
     @Column(name = "birth_dt")
-    private Date birthDate;
+    private Date birthDt;
 
     @Column(name = "update_dt")
-    private Date updateDate;
+    private Date updateDt;
 }

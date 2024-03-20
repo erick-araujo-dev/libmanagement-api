@@ -13,7 +13,7 @@ public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cd_author")
-    private int authorId;
+    private int cdAuthor;
 
     @Column(name = "name")
     private String name;

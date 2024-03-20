@@ -16,10 +16,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cd_user")
-    private int userId;
+    private int cdUser;
 
-    @Column(name = "username")
-    private String username;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "email")
     private String email;
@@ -28,15 +28,18 @@ public class User {
     private String password;
 
     @Column(name = "create_dt")
-    private Date createDate;
+    private Date createDt;
 
     @Column(name = "update_dt")
-    private Date updateDate;
+    private Date updateDt;
+
+    @Column(name = "role")
+    private String role;
 
     public User(UserCreationDTO userDTO) {
-        this.username = userDTO.getUsername();
+        this.name = userDTO.getUsername();
         this.email = userDTO.getEmail();
         this.password = userDTO.getPassword();
-        this.createDate = new Date();
+        this.createDt = new Date();
     }
 }

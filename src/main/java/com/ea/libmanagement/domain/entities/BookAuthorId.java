@@ -15,8 +15,8 @@ import java.util.Objects;
 public class BookAuthorId implements Serializable {
 
     @Column(name = "cd_book")
-    private Long bookId;
+    private Long cdBook;
 
     @Column(name = "cd_author")
-    private Long authorId;
+    private Long cdAuthor;
 }

@@ -14,7 +14,7 @@ public class Copy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cd_copy")
-    private int copyId;
+    private int cdCopy;
 
     @ManyToOne
     @JoinColumn(name = "cd_book", referencedColumnName = "cd_book")
@@ -27,8 +27,8 @@ public class Copy {
     private String condition;
 
     @Column(name = "update_dt")
-    private Date updateDate;
+    private Date updateDt;
 
     @Column(name = "create_dt")
-    private Date createDate;
+    private Date createDt;
 }

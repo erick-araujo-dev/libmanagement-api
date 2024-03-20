@@ -14,7 +14,7 @@ public class Rent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cd_rent")
-    private int rentId;
+    private int cdRent;
 
     @ManyToOne
     @JoinColumn(name = "cd_client", referencedColumnName = "cd_client")
@@ -25,10 +25,10 @@ public class Rent {
     private Copy copy;
 
     @Column(name = "rent_dt")
-    private Date rentDate;
+    private Date rentDt;
 
     @Column(name = "return_dt")
-    private Date returnDate;
+    private Date returnDt;
 
     @Column(name = "return_condicion")
     private String returnCondition;

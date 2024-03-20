@@ -11,12 +11,12 @@ public class BookAuthor {
     private BookAuthorId id;
 
     @ManyToOne
-    @MapsId("bookId")
+    @MapsId("cdBook")
     @JoinColumn(name = "cd_book")
     private Book book;
 
     @ManyToOne
-    @MapsId("authorId")
+    @MapsId("cdAuthor")
     @JoinColumn(name = "cd_author")
     private Author author;
 
