@@ -1,5 +1,6 @@
 package com.ea.libmanagement.application.services;
 
+import com.ea.libmanagement.domain.dtos.request.AuthorRequestDTO;
 import com.ea.libmanagement.domain.dtos.request.BookCreateRequestDTO;
 import com.ea.libmanagement.domain.entities.Author;
 import com.ea.libmanagement.domain.entities.Book;
@@ -13,15 +14,14 @@ import com.ea.libmanagement.infrastructure.repositories.CopyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Optional;
 
 public class BookService {
-    private BookRepository bookRepository;
-    private AuthorRepository authorRepository;
-
-
-    private  CopyRepository copyRepository;
-    private BookAuthorRepository bookAuthorRepository;
+    private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
+    private final CopyRepository copyRepository;
+    private final BookAuthorRepository bookAuthorRepository;
 
     @Autowired
     private BookService(BookRepository bookRepository, AuthorRepository authorRepository, CopyRepository copyRepository, BookAuthorRepository bookAuthorRepository) {
@@ -35,7 +35,6 @@ public class BookService {
     @Transactional
     public void createBook(BookCreateRequestDTO bookCreateRequestDTO) {
         Book book = new Book();
-
         book.setTitle(bookCreateRequestDTO.getTitle());
         book.setIsArchived(bookCreateRequestDTO.getIsArchived());
         book.setPages(bookCreateRequestDTO.getPages());
@@ -43,45 +42,35 @@ public class BookService {
         book.setPublisher(bookCreateRequestDTO.getPublisher());
         book.setEditionYear(bookCreateRequestDTO.getEditionYear());
         book.setPublicationYear(bookCreateRequestDTO.getPublicationYear());
+        bookRepository.save(book);
 
-        for ( var author : bookCreateRequestDTO.getAuthorRequestDTO() ) {
+        for ( var authorRequest : bookCreateRequestDTO.getAuthorRequestDTO() ) {
+            Author author = getOrCreateAuthor(authorRequest);
 
-            Optional<Author> authorExited = authorRepository.findByName(author.getName());
-
-            if(authorExited.isEmpty() ) {
-                Author authorNew = new Author();
-
-                authorNew.setName(author.getName());
-
-                authorRepository.save(authorNew);
-
-                BookAuthor bookAuthor = new BookAuthor();
-                bookAuthor.setBook(book);
-                bookAuthor.setAuthor(authorNew);
-
-                bookAuthorRepository.save(bookAuthor);
-            }
-
-
+            BookAuthor bookAuthor = new BookAuthor();
+            bookAuthor.setBook(book);
+            bookAuthor.setAuthor(author);
+            bookAuthorRepository.save(bookAuthor);
         }
 
         if(bookCreateRequestDTO.getIsArchived() == 0 && bookCreateRequestDTO.getNumberOfCopies() > 0) {
             for (int i = 0; i < bookCreateRequestDTO.getNumberOfCopies(); i++) {
                 Copy copy = new Copy();
-
                 copy.setBook(book);
                 copy.setStatus(StatusEnum.AVAILABLE.getValue());
-
                 copy.setCondition("NEW");
+                copy.setCreateDt(new Date());
+                copyRepository.save(copy);
             }
         }
-
-
-
     }
 
-
-
-
-
+    private Author getOrCreateAuthor(AuthorRequestDTO authorRequest) {
+        Optional<Author> existingAuthor = authorRepository.findByName(authorRequest.getName());
+        return existingAuthor.orElseGet(() -> {
+            Author newAuthor = new Author();
+            newAuthor.setName(authorRequest.getName());
+            return authorRepository.save(newAuthor);
+        });
+    }
 }
