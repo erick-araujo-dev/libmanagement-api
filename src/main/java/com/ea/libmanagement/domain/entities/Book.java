@@ -35,8 +35,8 @@ public class Book {
     private int ageRating;
 
     @Column(name = "is_archived")
-    private boolean archived;
+    private short isArchived;
 
     @Column(name = "update_dt")
-    private Date updateDt;
+    private Date updateAt;
 }
