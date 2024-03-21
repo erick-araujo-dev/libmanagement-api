@@ -1,0 +1,23 @@
+version: '2.1'
+
+services:
+  mysql:
+    image: docker.io/bitnami/mysql:8.3
+    ports:
+      - '8081:8081'
+    volumes:
+      - 'mysql_data:/bitnami/mysql/data'
+    environment:
+      - MYSQL_ROOT_PASSWORD=docker # Defina sua senha de root aqui
+      - MYSQL_DATABASE=libmanagementdb # Defina o nome do banco de dados que deseja criar
+      - MYSQL_USER=root # Defina o nome do usuário do banco de dados
+      - MYSQL_PASSWORD=root1234 # Defina a senha do usuário do banco de dados
+    healthcheck:
+      test: [ 'CMD', '/opt/bitnami/scripts/mysql/healthcheck.sh' ]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+
+volumes:
+  mysql_data:
+    driver: local

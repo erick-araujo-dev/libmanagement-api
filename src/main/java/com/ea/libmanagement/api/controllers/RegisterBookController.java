@@ -30,6 +30,7 @@ public class RegisterBookController {
         user.setName(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
+        user.setRole(userDTO.getRole());
         user.setCreateDt(new Date());
 
         userRepository.save(user);
