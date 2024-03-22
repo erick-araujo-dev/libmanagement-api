@@ -2,21 +2,20 @@ package com.ea.libmanagement.application.services;
 
 import com.ea.libmanagement.domain.dtos.request.AuthorRequestDTO;
 import com.ea.libmanagement.domain.dtos.request.BookCreateRequestDTO;
-import com.ea.libmanagement.domain.entities.Author;
-import com.ea.libmanagement.domain.entities.Book;
-import com.ea.libmanagement.domain.entities.BookAuthor;
-import com.ea.libmanagement.domain.entities.Copy;
+import com.ea.libmanagement.domain.entities.*;
 import com.ea.libmanagement.domain.enums.StatusEnum;
 import com.ea.libmanagement.infrastructure.repositories.AuthorRepository;
 import com.ea.libmanagement.infrastructure.repositories.BookAuthorRepository;
 import com.ea.libmanagement.infrastructure.repositories.BookRepository;
 import com.ea.libmanagement.infrastructure.repositories.CopyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
 
+@Service
 public class BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
@@ -24,10 +23,9 @@ public class BookService {
     private final BookAuthorRepository bookAuthorRepository;
 
     @Autowired
-    private BookService(BookRepository bookRepository, AuthorRepository authorRepository, CopyRepository copyRepository, BookAuthorRepository bookAuthorRepository) {
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository, CopyRepository copyRepository, BookAuthorRepository bookAuthorRepository) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
-
         this.copyRepository = copyRepository;
         this.bookAuthorRepository = bookAuthorRepository;
     }
@@ -44,12 +42,18 @@ public class BookService {
         book.setPublicationYear(bookCreateRequestDTO.getPublicationYear());
         bookRepository.save(book);
 
-        for ( var authorRequest : bookCreateRequestDTO.getAuthorRequestDTO() ) {
+        for ( var authorRequest : bookCreateRequestDTO.getAuthor() ) {
             Author author = getOrCreateAuthor(authorRequest);
+
+            BookAuthorId bookAuthorId = new BookAuthorId();
+            bookAuthorId.setCdBook(book.getCdBook());
+            bookAuthorId.setCdAuthor(author.getCdAuthor());
 
             BookAuthor bookAuthor = new BookAuthor();
             bookAuthor.setBook(book);
             bookAuthor.setAuthor(author);
+            bookAuthor.setId(bookAuthorId);
+
             bookAuthorRepository.save(bookAuthor);
         }
 

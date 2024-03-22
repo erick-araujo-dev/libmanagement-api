@@ -8,6 +8,10 @@ import jakarta.persistence.*;
 public class BookAuthor {
 
     @EmbeddedId
+    @AttributeOverrides({
+            @AttributeOverride(name = "cdBook", column = @Column(nullable = false)),
+            @AttributeOverride(name = "cdAuthor", column = @Column(nullable = false))
+    })
     private BookAuthorId id;
 
     @ManyToOne

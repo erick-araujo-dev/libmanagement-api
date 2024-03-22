@@ -1,5 +1,5 @@
 package com.ea.libmanagement.domain.entities;
-import com.ea.libmanagement.domain.dtos.UserCreationDTO;
+import com.ea.libmanagement.domain.dtos.UserCreatenDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,7 +36,7 @@ public class User {
     @Column(name = "role")
     private String role;
 
-    public User(UserCreationDTO userDTO) {
+    public User(UserCreatenDTO userDTO) {
         this.name = userDTO.getUsername();
         this.email = userDTO.getEmail();
         this.password = userDTO.getPassword();

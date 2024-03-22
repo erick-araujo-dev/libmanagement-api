@@ -1,6 +1,6 @@
 package com.ea.libmanagement.api.controllers;
 
-import com.ea.libmanagement.domain.dtos.UserCreationDTO;
+import com.ea.libmanagement.domain.dtos.UserCreatenDTO;
 import com.ea.libmanagement.domain.entities.User;
 import com.ea.libmanagement.infrastructure.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -25,7 +24,7 @@ public class RegisterBookController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<String> createUser(@RequestBody UserCreationDTO userDTO) {
+    public ResponseEntity<String> createUser(@RequestBody UserCreatenDTO userDTO) {
         User user = new User();
         user.setName(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());

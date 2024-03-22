@@ -1,6 +1,5 @@
 package com.ea.libmanagement.domain.dtos.request;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 
 import java.util.List;
@@ -15,7 +14,7 @@ public class BookCreateRequestDTO {
     private int ageRating;
     private short isArchived;
 
-    private List<AuthorRequestDTO> authorRequestDTO;
+    private List<AuthorRequestDTO> author;
 
     private int numberOfCopies;
 
