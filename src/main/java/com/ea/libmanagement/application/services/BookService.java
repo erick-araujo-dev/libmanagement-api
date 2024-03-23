@@ -70,10 +70,10 @@ public class BookService {
     }
 
     private Author getOrCreateAuthor(AuthorRequestDTO authorRequest) {
-        Optional<Author> existingAuthor = authorRepository.findByName(authorRequest.getName());
+        Optional<Author> existingAuthor = authorRepository.findByName(authorRequest.name());
         return existingAuthor.orElseGet(() -> {
             Author newAuthor = new Author();
-            newAuthor.setName(authorRequest.getName());
+            newAuthor.setName(authorRequest.name());
             return authorRepository.save(newAuthor);
         });
     }

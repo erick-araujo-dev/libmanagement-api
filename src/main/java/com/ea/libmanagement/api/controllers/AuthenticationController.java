@@ -1,9 +1,8 @@
 package com.ea.libmanagement.api.controllers;
 
-import com.ea.libmanagement.application.services.LoginService;
+import com.ea.libmanagement.application.services.AuthorizationService;
 import com.ea.libmanagement.domain.dtos.request.LoginRequestDTO;
 import com.ea.libmanagement.domain.dtos.response.LoginResponseDTO;
-import com.ea.libmanagement.infrastructure.security.TokenService;
 import com.ea.libmanagement.shared.exceptions.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("login")
 public class AuthenticationController {
-    private final LoginService loginService;
+    private final AuthorizationService loginService;
     @Autowired
-    public AuthenticationController(LoginService loginService) {
+    public AuthenticationController(AuthorizationService loginService) {
         this.loginService = loginService;
     }
 

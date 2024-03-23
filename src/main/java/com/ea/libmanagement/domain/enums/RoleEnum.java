@@ -9,6 +9,6 @@ public enum RoleEnum {
     ADMIN("admin"),
     NORMAL("normal");
 
-    private final String value;
+    private final String role;
 }
 
