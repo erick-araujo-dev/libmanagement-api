@@ -1,21 +1,21 @@
 package com.ea.libmanagement.domain.dtos.request;
 
-import lombok.Data;
 
 import java.util.List;
 
-@Data
-public class BookCreateRequestDTO {
-    private String title;
-    private int publicationYear;
-    private String publisher;
-    private int editionYear;
-    private int pages;
-    private int ageRating;
-    private short isArchived;
-
-    private List<AuthorRequestDTO> author;
-
-    private int numberOfCopies;
+public record BookCreateRequestDTO(
+        String title,
+        int publicationYear,
+        String publisher,
+        int editionYear,
+        int pages,
+        int ageRating,
+        short isArchived,
+        List<AuthorRequestDTO> author,
+        int numberOfCopies) {
 
 }
+
+
+
+

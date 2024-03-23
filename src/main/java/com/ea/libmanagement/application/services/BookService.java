@@ -33,16 +33,16 @@ public class BookService {
     @Transactional
     public void createBook(BookCreateRequestDTO bookCreateRequestDTO) {
         Book book = new Book();
-        book.setTitle(bookCreateRequestDTO.getTitle());
-        book.setIsArchived(bookCreateRequestDTO.getIsArchived());
-        book.setPages(bookCreateRequestDTO.getPages());
-        book.setAgeRating(bookCreateRequestDTO.getAgeRating());
-        book.setPublisher(bookCreateRequestDTO.getPublisher());
-        book.setEditionYear(bookCreateRequestDTO.getEditionYear());
-        book.setPublicationYear(bookCreateRequestDTO.getPublicationYear());
+        book.setTitle(bookCreateRequestDTO.title());
+        book.setIsArchived(bookCreateRequestDTO.isArchived());
+        book.setPages(bookCreateRequestDTO.pages());
+        book.setAgeRating(bookCreateRequestDTO.ageRating());
+        book.setPublisher(bookCreateRequestDTO.publisher());
+        book.setEditionYear(bookCreateRequestDTO.editionYear());
+        book.setPublicationYear(bookCreateRequestDTO.publicationYear());
         bookRepository.save(book);
 
-        for ( var authorRequest : bookCreateRequestDTO.getAuthor() ) {
+        for ( var authorRequest : bookCreateRequestDTO.author() ) {
             Author author = getOrCreateAuthor(authorRequest);
 
             BookAuthorId bookAuthorId = new BookAuthorId();
@@ -57,8 +57,8 @@ public class BookService {
             bookAuthorRepository.save(bookAuthor);
         }
 
-        if(bookCreateRequestDTO.getIsArchived() == 0 && bookCreateRequestDTO.getNumberOfCopies() > 0) {
-            for (int i = 0; i < bookCreateRequestDTO.getNumberOfCopies(); i++) {
+        if(bookCreateRequestDTO.isArchived() == 0 && bookCreateRequestDTO.numberOfCopies() > 0) {
+            for (int i = 0; i < bookCreateRequestDTO.numberOfCopies(); i++) {
                 Copy copy = new Copy();
                 copy.setBook(book);
                 copy.setStatus(StatusEnum.AVAILABLE.getValue());

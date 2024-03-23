@@ -30,8 +30,8 @@ public class AuthorizationService implements UserDetailsService {
     }
 
     public LoginResponseDTO authenticate(LoginRequestDTO request) {
-        String email = request.getEmail();
-        String password = request.getPassword();
+        String email = request.email();
+        String password = request.password();
 
         User user = userRepository.findByEmailAndPassword(email, password);
 
