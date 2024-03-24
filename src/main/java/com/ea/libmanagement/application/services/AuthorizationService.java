@@ -41,12 +41,8 @@ public class AuthorizationService implements UserDetailsService {
 
         String token = tokenService.generateToken(user);
 
-        LoginResponseDTO response = new LoginResponseDTO();
-        response.setToken(token);
-        response.setName(user.getName());
 
-
-        return response;
+        return ;
     }
 
     private boolean verifyPassword(String typedPassword, String storedPassword) {
