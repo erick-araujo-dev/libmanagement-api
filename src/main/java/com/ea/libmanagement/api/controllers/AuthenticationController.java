@@ -33,26 +33,24 @@ public class AuthenticationController {
     TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO > login(@RequestBody LoginRequestDTO data) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO data) {
         try {
             var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
             var auth = this.authenticationManager.authenticate(usernamePassword);
 
             var token = tokenService.generateToken((User) auth.getPrincipal());
-
-
             return ResponseEntity.status(HttpStatus.OK).body(new LoginResponseDTO(token));
         } catch (BusinessException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Erro de negócio: " + e.getMessage());
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + e.getMessage());
         }
     }
 
     @PostMapping("/register")
     public ResponseEntity<String> createUser(@RequestBody UserCreateDTO userDTO) {
         User user = new User();
-        user.setName(userDTO.username());
+        user.setName(userDTO.name());
         user.setEmail(userDTO.email());
         user.setPassword(userDTO.password());
         user.setRole(userDTO.role());

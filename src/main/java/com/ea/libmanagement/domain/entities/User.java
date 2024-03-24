@@ -40,12 +40,14 @@ public class User implements UserDetails {
     private Date updateDt;
 
     @Column(name = "role")
+    @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
     public User(UserCreateDTO userDTO) {
-        this.name = userDTO.getUsername();
-        this.email = userDTO.getEmail();
-        this.password = userDTO.getPassword();
+        this.name = userDTO.name();
+        this.email = userDTO.email();
+        this.password = userDTO.password();
+        this.role = userDTO.role();
         this.createDt = new Date();
     }
 
@@ -62,21 +64,21 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
