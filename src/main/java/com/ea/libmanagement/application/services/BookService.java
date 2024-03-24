@@ -65,7 +65,7 @@ public class BookService {
                 copy.setBook(book);
                 copy.setStatus(StatusEnum.AVAILABLE.getValue());
                 copy.setCondition("NEW");
-                copy.setCreateDt(new Date());
+                copy.setCreateAt(new Date());
                 copyRepository.save(copy);
             }
         }
