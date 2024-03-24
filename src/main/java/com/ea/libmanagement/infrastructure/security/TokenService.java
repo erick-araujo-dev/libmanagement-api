@@ -28,7 +28,7 @@ public class TokenService {
                     .withIssuer("libmanagement_api")
                     .withExpiresAt(expiresDate())
                     .withClaim("name", user.getName())
-                    .withClaim("role", user.getRole())
+                    //.withClaim("role", user.getRole())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
             throw new RuntimeException("Erro ao gerar token", exception);

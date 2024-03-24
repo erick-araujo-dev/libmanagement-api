@@ -27,8 +27,8 @@ public class Copy {
     private String condition;
 
     @Column(name = "update_dt")
-    private Date updateDt;
+    private Date updateAt;
 
     @Column(name = "create_dt")
-    private Date createDt;
+    private Date createAt;
 }

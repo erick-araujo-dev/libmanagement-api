@@ -26,4 +26,11 @@ public class BookController {
         }
 
     }
+
+    @PostMapping("/archive")
+    public ResponseEntity<String> archiveBook(@RequestParam int id) {
+        var  book =  bookService.archiveBook(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body("o livro é " + book);
+    }
 }
