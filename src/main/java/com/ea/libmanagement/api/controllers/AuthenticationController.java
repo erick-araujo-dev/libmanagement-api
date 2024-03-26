@@ -1,6 +1,7 @@
 package com.ea.libmanagement.api.controllers;
 
 import com.ea.libmanagement.application.services.AuthorizationService;
+import com.ea.libmanagement.application.services.UserService;
 import com.ea.libmanagement.domain.dtos.UserCreateDTO;
 import com.ea.libmanagement.domain.dtos.request.LoginRequestDTO;
 import com.ea.libmanagement.domain.dtos.response.LoginResponseDTO;
@@ -23,14 +24,15 @@ import java.util.Date;
 @RestController
 @RequestMapping("auth")
 public class AuthenticationController {
+    private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
+    private final UserService userService;
     @Autowired
-    AuthenticationManager authenticationManager;
-    @Autowired
-    AuthorizationService loginService;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    TokenService tokenService;
+    public AuthenticationController(AuthenticationManager authenticationManager, TokenService tokenService, UserService userService) {
+        this.authenticationManager = authenticationManager;
+        this.tokenService = tokenService;
+        this.userService = userService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO data) {
@@ -48,16 +50,14 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> createUser(@RequestBody UserCreateDTO userDTO) {
-        User user = new User();
-        user.setName(userDTO.name());
-        user.setEmail(userDTO.email());
-        user.setPassword(userDTO.password());
-        user.setRole(userDTO.role());
-        user.setCreateDt(new Date());
-
-        userRepository.save(user);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
+    public ResponseEntity<?> createUser(@RequestBody UserCreateDTO userDTO) {
+        try {
+            userService.CreateUser(userDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
+        } catch (BusinessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro de negócio: " + e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + e.getMessage());
+        }
     }
 }
