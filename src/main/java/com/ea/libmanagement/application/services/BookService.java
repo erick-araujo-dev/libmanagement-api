@@ -71,23 +71,32 @@ public class BookService {
         }
     }
 
-    public List<Copy> archiveBook(int bookId) {
-
+    public String archiveBook(int bookId) {
 
         var book =  bookRepository.findById(bookId);
 
         var copyBook = copyRepository.findByBook(book.get());
 
         for (var copies : copyBook) {
-           var condition =  copies.getCondition();
+           var status =  copies.getStatus();
 
-           if(condition != "NEW") {
+            if (status.equals("Alugado")) {
+                return "Não é posssivel arquivar livro que esteja alugado";
+            }
 
-           }
+            copies.setStatus("Indisponivel");
+
+            copyRepository.save(copies);
+
         }
 
-        return copyBook;
+        book.get().setIsArchived((short) 1);
+        book.get().setUpdateAt(new Date());
 
+        bookRepository.save(book.get());
+
+
+        return "livro arquivado";
 
     }
 
