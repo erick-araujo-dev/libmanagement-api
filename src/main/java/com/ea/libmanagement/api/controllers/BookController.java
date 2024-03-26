@@ -28,8 +28,15 @@ public class BookController {
 
     @PostMapping("/archive")
     public ResponseEntity<String> archiveBook(@RequestParam int id) {
-        var  book =  bookService.archiveBook(id);
+        var  response =  bookService.archiveBook(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body("o livro é " + book);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/un-archive")
+    public ResponseEntity<String> unArchiveBook(@RequestParam int id) {
+        var  response =  bookService.archiveBook(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
