@@ -19,7 +19,6 @@ public class BookController {
     public ResponseEntity<String> createBook(@RequestBody BookCreateRequestDTO bookRequestDTO) {
         try {
             bookService.createBook(bookRequestDTO);
-
             return ResponseEntity.status(HttpStatus.CREATED).body("Book created successfully");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
