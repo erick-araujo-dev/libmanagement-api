@@ -2,6 +2,7 @@ package com.ea.libmanagement.api.controllers;
 
 import com.ea.libmanagement.application.services.BookService;
 import com.ea.libmanagement.domain.dtos.request.BookCreateRequestDTO;
+import com.ea.libmanagement.shared.exceptions.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,24 +20,40 @@ public class BookController {
     public ResponseEntity<String> createBook(@RequestBody BookCreateRequestDTO bookRequestDTO) {
         try {
             bookService.createBook(bookRequestDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Book created successfully");
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.CREATED).body(null);
         }
-
+        catch (BusinessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro de negócio: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dados inválidos: " + e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + e.getMessage());
+        }
     }
 
-    @PostMapping("/archive")
-    public ResponseEntity<String> archiveBook(@RequestParam int id) {
-        var  response =  bookService.archiveBook(id);
+    @PostMapping("/archive/{id}")
+    public ResponseEntity<?> archiveBook(@PathVariable int id) {
+        try {
+            bookService.archiveBook(id);
+            return ResponseEntity.status(HttpStatus.OK).body("Livro arquivado");
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (BusinessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro de negócio: " + e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + e.getMessage());
+        }
     }
 
-    @PostMapping("/un-archive")
-    public ResponseEntity<String> unArchiveBook(@RequestParam int id) {
-        var  response =  bookService.archiveBook(id);
+    @PostMapping("/un-archive/{id}")
+    public ResponseEntity<?> unArchiveBook(@PathVariable int id) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        try {
+            bookService.unArchiveBook(id);
+            return ResponseEntity.status(HttpStatus.OK).body("Livro desarquivado");
+        } catch (BusinessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro de negócio: " + e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + e.getMessage());
+        }
     }
 }

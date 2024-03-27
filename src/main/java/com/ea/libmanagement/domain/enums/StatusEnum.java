@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum StatusEnum {
     AVAILABLE("available"),
     UNAVAILABLE("unavailable"),
-    RENTED("rented");
+    RENTED("rented"),
+    ARCHIVED("archived");
 
     private final String value;
 }

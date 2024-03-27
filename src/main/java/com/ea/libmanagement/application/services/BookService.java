@@ -8,14 +8,14 @@ import com.ea.libmanagement.infrastructure.repositories.AuthorRepository;
 import com.ea.libmanagement.infrastructure.repositories.BookAuthorRepository;
 import com.ea.libmanagement.infrastructure.repositories.BookRepository;
 import com.ea.libmanagement.infrastructure.repositories.CopyRepository;
+import com.ea.libmanagement.shared.exceptions.BusinessException;
+import com.ea.libmanagement.shared.utils.FieldValidations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -34,6 +34,9 @@ public class BookService {
 
     @Transactional
     public void createBook(BookCreateRequestDTO bookCreateRequestDTO) {
+        bookCreateRequestDTO.validate();
+        validateExistingBook(bookCreateRequestDTO);
+
         Book book = new Book();
         book.setTitle(bookCreateRequestDTO.title());
         book.setIsArchived(bookCreateRequestDTO.isArchived());
@@ -71,34 +74,59 @@ public class BookService {
         }
     }
 
-    public String archiveBook(int bookId) {
-
+    @Transactional
+    public void archiveBook(int bookId) {
         var book =  bookRepository.findById(bookId);
 
+        if (book.get().getIsArchived() == 1) {
+            throw new BusinessException("Livro já está arquivado");
+        }
         var copyBook = copyRepository.findByBook(book.get());
 
         for (var copies : copyBook) {
            var status =  copies.getStatus();
 
-            if (status.equals("Alugado")) {
-                return "Não é posssivel arquivar livro que esteja alugado";
+            if (status.equals(StatusEnum.RENTED.getValue())) {
+                throw new BusinessException("Não é posssivel arquivar livro que esteja alugado");
             }
-
-            copies.setStatus("Indisponivel");
+            copies.setStatus(StatusEnum.ARCHIVED.getValue());
 
             copyRepository.save(copies);
-
         }
 
         book.get().setIsArchived((short) 1);
         book.get().setUpdateAt(new Date());
 
         bookRepository.save(book.get());
-
-
-        return "livro arquivado";
-
     }
+
+    @Transactional
+    public void unArchiveBook(int bookId) {
+        var book =  bookRepository.findById(bookId);
+        if (book.get().getIsArchived() == 0) {
+            throw new BusinessException("Livro já está desarquivado");
+        }
+
+        var copyBook = copyRepository.findByBook(book.get());
+
+        for (var copies : copyBook) {
+            var status =  copies.getStatus();
+
+            if (status.equals(StatusEnum.ARCHIVED.getValue())) copies.setStatus(StatusEnum.AVAILABLE.getValue());
+            copyRepository.save(copies);
+        }
+
+        book.get().setIsArchived((short) 0);
+        book.get().setUpdateAt(new Date());
+
+        bookRepository.save(book.get());
+    }
+
+
+
+
+
+    //region Private Methods
 
     private Author getOrCreateAuthor(AuthorRequestDTO authorRequest) {
         Optional<Author> existingAuthor = authorRepository.findByName(authorRequest.name());
@@ -108,4 +136,36 @@ public class BookService {
             return authorRepository.save(newAuthor);
         });
     }
+
+    private void validateExistingBook(BookCreateRequestDTO bookCreateRequestDTO) {
+        List<Book> existingBook = bookRepository.findByTitleAndPublisherAndEditionYearAndPublicationYear(
+                bookCreateRequestDTO.title(),
+                bookCreateRequestDTO.publisher(),
+                bookCreateRequestDTO.editionYear(),
+                bookCreateRequestDTO.publicationYear()
+        );
+
+        existingBook.forEach(book -> {
+            List<BookAuthor> existingAuthors = bookAuthorRepository.findByBook(book);
+
+            List<String> existingAuthorNames = existingAuthors.stream()
+                    .map(BookAuthor::getAuthor)
+                    .map(Author::getName)
+                    .toList();
+
+            List<String> newAuthorNames = bookCreateRequestDTO.author().stream()
+                    .map(AuthorRequestDTO::name)
+                    .toList();
+
+            boolean authorsMatch = new HashSet<>(existingAuthorNames).containsAll(newAuthorNames);
+
+            if (authorsMatch) {
+                throw new BusinessException("Já existe um livro cadastrado com os mesmos dados");
+            }
+        });
+    }
+
+    //endregion
+
+
 }

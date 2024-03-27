@@ -1,12 +1,10 @@
 package com.ea.libmanagement.api.controllers;
 
-import com.ea.libmanagement.application.services.AuthorizationService;
 import com.ea.libmanagement.application.services.UserService;
 import com.ea.libmanagement.domain.dtos.UserCreateDTO;
 import com.ea.libmanagement.domain.dtos.request.LoginRequestDTO;
 import com.ea.libmanagement.domain.dtos.response.LoginResponseDTO;
 import com.ea.libmanagement.domain.entities.User;
-import com.ea.libmanagement.infrastructure.repositories.UserRepository;
 import com.ea.libmanagement.infrastructure.security.TokenService;
 import com.ea.libmanagement.shared.exceptions.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Date;
 
 @RestController
 @RequestMapping("auth")
@@ -53,7 +49,7 @@ public class AuthenticationController {
     public ResponseEntity<?> createUser(@RequestBody UserCreateDTO userDTO) {
         try {
             userService.CreateUser(userDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(null);
         } catch (BusinessException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro de negócio: " + e.getMessage());
         } catch (Exception e){
