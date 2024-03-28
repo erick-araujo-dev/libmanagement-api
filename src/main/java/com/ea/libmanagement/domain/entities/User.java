@@ -1,6 +1,5 @@
 package com.ea.libmanagement.domain.entities;
-import com.ea.libmanagement.domain.dtos.UserCreateDTO;
-import com.ea.libmanagement.domain.enums.RoleEnum;
+import com.ea.libmanagement.domain.dtos.request.UserCreateRequestDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,7 +42,7 @@ public class User implements UserDetails {
     @Column(name = "role")
     private String role;
 
-    public User(UserCreateDTO userDTO) {
+    public User(UserCreateRequestDTO userDTO) {
         this.name = userDTO.name();
         this.email = userDTO.email();
         this.password = userDTO.password();

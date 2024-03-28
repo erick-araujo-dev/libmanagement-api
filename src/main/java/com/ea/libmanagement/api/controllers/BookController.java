@@ -2,11 +2,14 @@ package com.ea.libmanagement.api.controllers;
 
 import com.ea.libmanagement.application.services.BookService;
 import com.ea.libmanagement.domain.dtos.request.BookCreateRequestDTO;
+import com.ea.libmanagement.domain.dtos.response.BookResponseDTO;
 import com.ea.libmanagement.shared.exceptions.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("book")
@@ -56,4 +59,21 @@ public class BookController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + e.getMessage());
         }
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAll() {
+        try {
+            var response = bookService.getAll();
+
+            if (response == null || response.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhum livro encontrado");
+            }
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor: " + e.getMessage());
+        }
+    }
+
+
 }

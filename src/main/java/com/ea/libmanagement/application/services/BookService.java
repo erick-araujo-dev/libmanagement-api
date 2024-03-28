@@ -2,6 +2,7 @@ package com.ea.libmanagement.application.services;
 
 import com.ea.libmanagement.domain.dtos.request.AuthorRequestDTO;
 import com.ea.libmanagement.domain.dtos.request.BookCreateRequestDTO;
+import com.ea.libmanagement.domain.dtos.response.BookResponseDTO;
 import com.ea.libmanagement.domain.entities.*;
 import com.ea.libmanagement.domain.enums.StatusEnum;
 import com.ea.libmanagement.infrastructure.repositories.AuthorRepository;
@@ -19,6 +20,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class BookService {
+
+    //region Constructors
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final CopyRepository copyRepository;
@@ -32,6 +35,9 @@ public class BookService {
         this.bookAuthorRepository = bookAuthorRepository;
     }
 
+    //endregion
+
+    //region Public Methods
     @Transactional
     public void createBook(BookCreateRequestDTO bookCreateRequestDTO) {
         bookCreateRequestDTO.validate();
@@ -76,12 +82,14 @@ public class BookService {
 
     @Transactional
     public void archiveBook(int bookId) {
-        var book =  bookRepository.findById(bookId);
+        Optional<Book> bookOptional =  bookRepository.findById(bookId);
 
-        if (book.get().getIsArchived() == 1) {
+        Book book = bookOptional.orElseThrow(() -> new BusinessException("Livro não encontrado"));
+
+        if (book.getIsArchived() == 1) {
             throw new BusinessException("Livro já está arquivado");
         }
-        var copyBook = copyRepository.findByBook(book.get());
+        var copyBook = copyRepository.findByBook(book);
 
         for (var copies : copyBook) {
            var status =  copies.getStatus();
@@ -94,20 +102,23 @@ public class BookService {
             copyRepository.save(copies);
         }
 
-        book.get().setIsArchived((short) 1);
-        book.get().setUpdateAt(new Date());
+        book.setIsArchived((short) 1);
+        book.setUpdateAt(new Date());
 
-        bookRepository.save(book.get());
+        bookRepository.save(book);
     }
 
     @Transactional
     public void unArchiveBook(int bookId) {
-        var book =  bookRepository.findById(bookId);
-        if (book.get().getIsArchived() == 0) {
+        var bookOptional =  bookRepository.findById(bookId);
+
+        Book book = bookOptional.orElseThrow(() -> new BusinessException("Livro não encontrado"));
+
+        if (book.getIsArchived() == 0) {
             throw new BusinessException("Livro já está desarquivado");
         }
 
-        var copyBook = copyRepository.findByBook(book.get());
+        var copyBook = copyRepository.findByBook(book);
 
         for (var copies : copyBook) {
             var status =  copies.getStatus();
@@ -116,15 +127,43 @@ public class BookService {
             copyRepository.save(copies);
         }
 
-        book.get().setIsArchived((short) 0);
-        book.get().setUpdateAt(new Date());
+        book.setIsArchived((short) 0);
+        book.setUpdateAt(new Date());
 
-        bookRepository.save(book.get());
+        bookRepository.save(book);
     }
 
+    public List<BookResponseDTO> getAll() {
+        List<Book> bookList = bookRepository.findAll();
 
+        List<BookResponseDTO> response = new ArrayList<>();
 
+        bookList.forEach(book -> {
+            List<AuthorRequestDTO> authors = new ArrayList<>();
+            List<BookAuthor> bookAuthors = bookAuthorRepository.findByBook(book);
+            bookAuthors.forEach(bookAuthor -> {
+                Author author = bookAuthor.getAuthor();
+                authors.add(new AuthorRequestDTO(author.getName()));
+            });
 
+            BookResponseDTO bookResponseDTO = new BookResponseDTO(
+                    book.getTitle(),
+                    book.getPublicationYear(),
+                    book.getPublisher(),
+                    book.getEditionYear(),
+                    book.getPages(),
+                    book.getAgeRating(),
+                    book.getIsArchived(),
+                    authors
+            );
+
+            response.add(bookResponseDTO);
+        });
+
+        return response;
+    }
+
+    //endregion
 
     //region Private Methods
 

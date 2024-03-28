@@ -1,7 +1,7 @@
 package com.ea.libmanagement.api.controllers;
 
 import com.ea.libmanagement.application.services.UserService;
-import com.ea.libmanagement.domain.dtos.UserCreateDTO;
+import com.ea.libmanagement.domain.dtos.request.UserCreateRequestDTO;
 import com.ea.libmanagement.domain.dtos.request.LoginRequestDTO;
 import com.ea.libmanagement.domain.dtos.response.LoginResponseDTO;
 import com.ea.libmanagement.domain.entities.User;
@@ -46,7 +46,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> createUser(@RequestBody UserCreateDTO userDTO) {
+    public ResponseEntity<?> createUser(@RequestBody UserCreateRequestDTO userDTO) {
         try {
             userService.CreateUser(userDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(null);

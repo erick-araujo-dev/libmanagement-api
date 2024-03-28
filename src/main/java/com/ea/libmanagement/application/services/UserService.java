@@ -1,6 +1,6 @@
 package com.ea.libmanagement.application.services;
 
-import com.ea.libmanagement.domain.dtos.UserCreateDTO;
+import com.ea.libmanagement.domain.dtos.request.UserCreateRequestDTO;
 import com.ea.libmanagement.domain.entities.User;
 import com.ea.libmanagement.infrastructure.repositories.UserRepository;
 import com.ea.libmanagement.shared.exceptions.BusinessException;
@@ -18,7 +18,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void CreateUser(UserCreateDTO newUser){
+    public void CreateUser(UserCreateRequestDTO newUser){
         if (userRepository.findByEmail(newUser.email()) != null) {
             throw new BusinessException("Email já está sendo utilizado por outro usuário.");
         }
